@@ -1,16 +1,16 @@
 [workspace]
 resolver = "2"
 members = ["stremio-core-kotlin", "stremio-core-protobuf"]
-
 [workspace.dependencies]
-stremio-core = { version = "0.1", git = "https://github.com/Stremio/stremio-core", branch = "development", features = [
+stremio-core = { git = "https://github.com/Stremio/stremio-core.git", features = [
     "derive",
     "analytics",
     "env-future-send",
 ] }
 # For share UI models
-stremio-core-web = { version = "0.49", git = "https://github.com/Stremio/stremio-core", branch = "development", default-features = false }
+stremio-core-web = { git = "https://github.com/Stremio/stremio-core.git", default-features = false }
 stremio-core-protobuf = { version = "0.1", path = "stremio-core-protobuf", default-features = false }
+stremio-watched-bitfield = { git = "https://github.com/Stremio/stremio-core.git" }
 
 # Protobuf
 prost = "0.13"
@@ -24,7 +24,7 @@ glob = "0.3.0"
 
 # Http Request handling
 http = { version = "1.2" }
-reqwest = { version = "0.12" }
+reqwest = { version = "0.12", default-features = false }
 openssl = { version = "=0.10.57" }
 # https://github.com/sfackler/rust-openssl/issues/2163
 openssl-sys = { version = "=0.9.92" }
@@ -57,5 +57,7 @@ tracing-subscriber = { version = "0.3" }
 
 [profile.release]
 lto = true
-opt-level = 3
-debug = 2
+opt-level = "z"
+codegen-units = 1
+debug = 0
+strip = true

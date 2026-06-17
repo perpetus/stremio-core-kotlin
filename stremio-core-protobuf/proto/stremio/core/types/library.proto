@@ -18,6 +18,7 @@ message LibraryItem {
   required double progress = 9;
   required bool watched = 10;
   required uint64 notifications = 11;
+  optional int32 remaining_episodes = 12;
 }
 
 message LibraryItemState {

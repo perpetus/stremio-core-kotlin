@@ -13,6 +13,7 @@ default = []
 
 [dependencies]
 stremio-core.workspace = true
+stremio-watched-bitfield.workspace = true
 
 # Protobuf 
 prost.workspace = true

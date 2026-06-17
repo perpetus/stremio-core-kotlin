@@ -104,6 +104,9 @@ impl FromProtobuf<Settings> for types::profile::Settings {
             quit_on_close: self.quit_on_close,
             gamepad_support: self.gamepad_support,
             ass_subtitles_styling: self.ass_subtitles_styling,
+            discord_rpc_enabled: false,
+            gpu_video_processing: false,
+            interface_scale: 100,
         }
     }
 }

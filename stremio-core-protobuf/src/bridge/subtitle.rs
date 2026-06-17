@@ -9,6 +9,7 @@ impl FromProtobuf<Subtitles> for types::Subtitle {
             id: self.id.clone(),
             lang: self.lang.to_string(),
             url: self.url.from_protobuf(),
+            label: None,
         }
     }
 }

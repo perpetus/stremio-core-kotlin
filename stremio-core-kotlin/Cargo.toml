@@ -12,7 +12,6 @@ kotlin = [
     # for fetch (making requests):
     "dep:http",
     "dep:reqwest",
-    "dep:openssl",
     "dep:http-cache-reqwest",
     "dep:reqwest-middleware",
     # executors
@@ -73,7 +72,7 @@ futures.workspace = true
 # Http Request handling
 http = { workspace = true, optional = true }
 reqwest = { workspace = true, features = ["json", "rustls-tls"], optional = true }
-openssl = { workspace = true, features = ["vendored"], optional = true }
+# openssl = { workspace = true, features = ["vendored"], optional = true }
 http-cache-reqwest = { workspace = true, optional = true }
 reqwest-middleware = { workspace = true, optional = true }
 

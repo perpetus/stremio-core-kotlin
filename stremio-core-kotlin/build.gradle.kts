@@ -12,9 +12,8 @@ allprojects {
 
 plugins {
   kotlin("multiplatform") version "1.9.25"
-  id("org.mozilla.rust-android-gradle.rust-android") version "0.9.6"
   id("com.google.protobuf") version "0.9.4"
-  id("com.android.library") version "8.5.2"
+  id("com.android.library") version "9.2.0"
   id("maven-publish")
 }
 
@@ -44,6 +43,7 @@ kotlin {
   @Suppress("UNUSED_VARIABLE")
   sourceSets {
     val commonMain by getting {
+      kotlin.srcDir("build/generated/source/proto/release/pbandk")
       dependencies {
         implementation("pro.streem.pbandk:pbandk-runtime:${pbandkVersion}")
       }
@@ -57,7 +57,7 @@ kotlin {
 }
 
 android {
-  ndkVersion = "28.2.13676358" // configure in .cargo/config.toml and workflows/release.yml as well
+  ndkVersion = "29.0.13846066" // configure in .cargo/config.toml and workflows/release.yml as well
 
   defaultConfig {
     namespace = "com.stremio.core"
@@ -74,13 +74,15 @@ android {
     }
   }
 
-  packagingOptions {
-    doNotStrip += setOf("**/*.so")
-  }
-
   packaging {
     resources {
       excludes += "**/*.proto"
+    }
+  }
+
+  variantFilter {
+    if (name == "debug") {
+      ignore = true
     }
   }
 }
@@ -105,17 +107,49 @@ protobuf {
   }
 }
 
-cargo {
-  module = "./"
-  libname = "stremio_core_kotlin"
-  targetDirectory = "../target"
-  targets = listOf("arm", "arm64", "x86", "x86_64")
-  verbose = true
-  profile = "release"
+val cargoReleaseBuild = true
+
+val cargoTargets = mapOf(
+    "arm64" to "aarch64-linux-android",
+    "x86_64" to "x86_64-linux-android"
+)
+
+val targetJniMap = mapOf(
+    "arm64" to "arm64-v8a",
+    "x86_64" to "x86_64"
+)
+
+cargoTargets.forEach { (name, targetTriple) ->
+    tasks.register<Exec>("cargoBuild_${name}") {
+        workingDir = file(".")
+        val cmd = mutableListOf("cargo", "ndk", "--target", targetTriple, "--platform", "21", "build")
+        if (cargoReleaseBuild) {
+            cmd.add("--release")
+        }
+        if (org.apache.tools.ant.taskdefs.condition.Os.isFamily(org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS)) {
+            commandLine("cmd", "/c", cmd.joinToString(" "))
+        } else {
+            commandLine(cmd)
+        }
+    }
 }
 
-tasks.whenTaskAdded {
-  if (name == "javaPreCompileDebug" || name == "javaPreCompileRelease" || name == "mergeDebugJniLibFolders" || name == "mergeReleaseJniLibFolders") {
-    dependsOn("cargoBuild")
-  }
+val copyJniLibs = tasks.register<Copy>("copyJniLibs") {
+    cargoTargets.keys.forEach { name ->
+        dependsOn("cargoBuild_${name}")
+        val profileDir = if (cargoReleaseBuild) "release" else "debug"
+        from(file("../target/${cargoTargets[name]}/${profileDir}/libstremio_core_kotlin.so")) {
+            into(targetJniMap[name]!!)
+        }
+    }
+    into(file("src/androidMain/jniLibs"))
+}
+
+tasks.named("preBuild") {
+    dependsOn(copyJniLibs)
+}
+
+// No manual copy tasks needed. Protobuf output dir is mapped dynamically above.
+
+afterEvaluate {
 }
