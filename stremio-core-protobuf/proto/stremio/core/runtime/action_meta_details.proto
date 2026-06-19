@@ -4,8 +4,6 @@ package stremio.core.runtime;
 
 option java_package = "com.stremio.core.runtime.msg";
 
-import "google/protobuf/empty.proto";
-
 import "stremio/core/types/video.proto";
 import "stremio/core/types/rating.proto";
 

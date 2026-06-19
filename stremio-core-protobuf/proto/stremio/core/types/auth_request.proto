@@ -4,7 +4,6 @@ package stremio.core.types;
 
 option java_package = "com.stremio.core.types.api";
 
-import "google/protobuf/timestamp.proto";
 import "stremio/core/types/profile.proto";
 
 message AuthRequest {

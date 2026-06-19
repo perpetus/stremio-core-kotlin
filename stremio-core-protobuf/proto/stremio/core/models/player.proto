@@ -8,7 +8,6 @@ import "stremio/core/models/loadable.proto";
 import "stremio/core/models/meta_details.proto";
 import "stremio/core/types/addon.proto";
 import "stremio/core/types/library.proto";
-import "stremio/core/types/meta_item.proto";
 import "stremio/core/types/subtitle.proto";
 import "stremio/core/types/stream.proto";
 import "stremio/core/types/video.proto";

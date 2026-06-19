@@ -4,7 +4,6 @@ package stremio.core.runtime;
 
 option java_package = "com.stremio.core.runtime";
 
-import "google/protobuf/empty.proto";
 import "stremio/core/runtime/event.proto";
 import "stremio/core/runtime/field.proto";
 
