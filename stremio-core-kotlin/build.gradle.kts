@@ -216,11 +216,15 @@ val cargoReleaseBuild = true
 
 val cargoTargets = mapOf(
     "arm64" to "aarch64-linux-android",
+    "armv7" to "armv7-linux-androideabi",
+    "x86" to "i686-linux-android",
     "x86_64" to "x86_64-linux-android"
 )
 
 val targetJniMap = mapOf(
     "arm64" to "arm64-v8a",
+    "armv7" to "armeabi-v7a",
+    "x86" to "x86",
     "x86_64" to "x86_64"
 )
 
